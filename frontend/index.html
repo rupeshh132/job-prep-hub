@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Job Prep Hub</title>
+  <title>Job Prep Hub - Day 3</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
-    button { padding: 10px 15px; font-size: 16px; cursor: pointer; }
+    input, button { padding: 10px; margin: 5px 0; width: 200px; }
+    button { cursor: pointer; }
     ul { list-style-type: none; padding: 0; margin-top: 20px; }
     li { background: #f4f4f4; margin: 10px 0; padding: 10px; border-radius: 5px; }
     a { text-decoration: none; color: #007bff; }
@@ -13,22 +14,77 @@
   </style>
 </head>
 <body>
-  <h1>Frontend Ready 🚀</h1>
-  <button onclick="loadResources()">Show Resources</button>
-  <ul id="resource-list"></ul>
 
-  <script>
-    async function loadResources() {
-      const res = await fetch("http://localhost:5000/api/resources");
-      const data = await res.json();
-      const list = document.getElementById("resource-list");
-      list.innerHTML = "";
-      data.forEach(item => {
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="${item.link}" target="_blank">${item.title}</a>`;
-        list.appendChild(li);
-      });
+<h1>Job Prep Hub 🚀</h1>
+
+<!-- Login Form -->
+<div id="loginDiv">
+  <h2>Login</h2>
+  <input type="text" id="username" placeholder="Username"><br>
+  <input type="password" id="password" placeholder="Password"><br>
+  <button onclick="login()">Login</button>
+  <p id="loginStatus"></p>
+</div>
+
+<!-- Resources Section -->
+<div id="resourcesDiv" style="display:none;">
+  <h2>Resources</h2>
+  <button onclick="loadResources()">Show Resources</button>
+  <ul id="resourceList"></ul>
+</div>
+
+<script>
+  // Check if user already logged in
+  window.onload = () => {
+    const username = localStorage.getItem("username");
+    if(username){
+      document.getElementById("loginDiv").style.display = "none";
+      document.getElementById("resourcesDiv").style.display = "block";
+      document.getElementById("loginStatus").innerText = `Welcome back, ${username} 🎉`;
     }
-  </script>
+  }
+
+  async function login(){
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    const res = await fetch("http://localhost:5000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+    const status = document.getElementById("loginStatus");
+
+    if(res.ok){
+      // Save token & username in localStorage
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("username", data.username);
+
+      // Show resources
+      document.getElementById("loginDiv").style.display = "none";
+      document.getElementById("resourcesDiv").style.display = "block";
+      status.innerText = `Welcome, ${data.username} 🎉`;
+    } else {
+      status.innerText = data.message;
+    }
+  }
+
+  async function loadResources(){
+    const res = await fetch("http://localhost:5000/api/resources");
+    const data = await res.json();
+
+    const list = document.getElementById("resourceList");
+    list.innerHTML = "";
+
+    data.forEach(r => {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="${r.link}" target="_blank">${r.title}</a>`;
+      list.appendChild(li);
+    });
+  }
+</script>
+
 </body>
 </html>
