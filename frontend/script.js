@@ -10,7 +10,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   const res = await fetch("http://localhost:5000/api/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify({ username, password })  // ✅ fixed bracket
   });
 
   const data = await res.json();
@@ -18,8 +18,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
 
   if (data.message.includes("successfully")) {
     // Register complete → show login form
-    document.getElementById("registerSection").style.display = "none";
-    document.getElementById("loginSection").style.display = "block";
+    showLogin();
   }
 });
 
@@ -35,7 +34,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   const res = await fetch("http://localhost:5000/api/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify({ username, password })  // ✅ fixed bracket
   });
 
   const data = await res.json();
@@ -78,7 +77,19 @@ function logout() {
   document.getElementById("welcomeMessage").style.display = "none";
   document.getElementById("logoutSection").style.display = "none";
 
-  // Show forms again
+  // Show Register form by default
+  showRegister();
+}
+
+// ------------------------
+// Switch Forms
+// ------------------------
+function showLogin() {
+  document.getElementById("registerSection").style.display = "none";
+  document.getElementById("loginSection").style.display = "block";
+}
+
+function showRegister() {
   document.getElementById("registerSection").style.display = "block";
   document.getElementById("loginSection").style.display = "none";
 }

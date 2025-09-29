@@ -7,7 +7,7 @@ const PORT = 5000;
 
 // Middlewares
 app.use(cors());
-app.use(express.json()); // => req.body ke liye zaroori
+app.use(express.json()); // req.body ke liye zaroori
 
 // Dummy resources
 const resources = [
@@ -26,8 +26,8 @@ app.get("/api/resources", (req, res) => {
   res.json(resources);
 });
 
-// --- Authentication (in-memory for Day 3 demo) ---
-let users = []; // will reset on server restart (later we move to DB)
+// --- Authentication (in-memory for demo) ---
+let users = []; // will reset on server restart
 
 // Register route
 app.post("/api/register", (req, res) => {
@@ -35,11 +35,10 @@ app.post("/api/register", (req, res) => {
   if (!username || !password) return res.status(400).json({ message: "Username and password required" });
 
   const exists = users.find(u => u.username === username);
-  if (exists) {
-    return res.status(400).json({ message: "User already exists!" });
-  }
+  if (exists) return res.status(400).json({ message: "User already exists!" });
 
   users.push({ username, password });
+  console.log("Current users:", users); // optional: debug
   return res.json({ message: "User registered successfully ✅" });
 });
 
@@ -49,11 +48,9 @@ app.post("/api/login", (req, res) => {
   if (!username || !password) return res.status(400).json({ message: "Username and password required" });
 
   const user = users.find(u => u.username === username && u.password === password);
-  if (!user) {
-    return res.status(401).json({ message: "Invalid credentials ❌" });
-  }
+  if (!user) return res.status(401).json({ message: "Invalid credentials ❌" });
 
-  // For now return a dummy token and username
+  // Return dummy token
   return res.json({ message: "Login successful ✅", token: "dummy-token", username });
 });
 
