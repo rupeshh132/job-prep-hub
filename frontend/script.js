@@ -1,5 +1,5 @@
 // ------------------------
-// Show Register / Login Toggle
+// Toggle Register / Login
 // ------------------------
 function showLogin() {
   document.getElementById("registerSection").style.display = "none";
@@ -8,27 +8,6 @@ function showLogin() {
 function showRegister() {
   document.getElementById("loginSection").style.display = "none";
   document.getElementById("registerSection").style.display = "block";
-}
-
-// ------------------------
-// Show Section
-// ------------------------
-function showSection(section) {
-  // Hide all
-  document.getElementById("homeSection").style.display = "none";
-  document.getElementById("resourcesSection").style.display = "none";
-  document.getElementById("profileSection").style.display = "none";
-
-  // Show chosen
-  if (section === "home") document.getElementById("homeSection").style.display = "block";
-  if (section === "resources") {
-    document.getElementById("resourcesSection").style.display = "block";
-    loadResources();
-  }
-  if (section === "profile") {
-    document.getElementById("profileSection").style.display = "block";
-    document.getElementById("profileInfo").innerText = "Logged in as: " + localStorage.getItem("username");
-  }
 }
 
 // ------------------------
@@ -49,9 +28,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   const data = await res.json();
   alert(data.message);
 
-  if (data.message.includes("successfully")) {
-    showLogin();
-  }
+  if (data.message.includes("successfully")) showLogin();
 });
 
 // ------------------------
@@ -72,31 +49,19 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   const data = await res.json();
 
   if (data.token) {
-    // Save token locally
     localStorage.setItem("token", data.token);
     localStorage.setItem("username", data.username);
 
-    // Hide forms
-    document.getElementById("loginSection").style.display = "none";
     document.getElementById("registerSection").style.display = "none";
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
 
-    // Show navbar + home
-    document.getElementById("navbar").style.display = "block";
-    showWelcome(data.username);
-    showSection("home");
+    document.getElementById("welcomeMessage").innerText = `Welcome ${data.username} 🚀`;
+    loadResources();
   } else {
     alert(data.message);
   }
 });
-
-// ------------------------
-// Show Welcome Message
-// ------------------------
-function showWelcome(username) {
-  const welcomeDiv = document.getElementById("welcomeMessage");
-  welcomeDiv.style.display = "block";
-  welcomeDiv.innerText = `Welcome ${username} ✅`;
-}
 
 // ------------------------
 // Load Resources
@@ -122,18 +87,12 @@ function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("username");
 
-  // Hide sections + navbar
-  document.getElementById("navbar").style.display = "none";
-  document.getElementById("homeSection").style.display = "none";
-  document.getElementById("resourcesSection").style.display = "none";
-  document.getElementById("profileSection").style.display = "none";
-
-  // Show register form again
+  document.getElementById("dashboard").style.display = "none";
   showRegister();
 }
 
 // ------------------------
-// Auto-Login (when refresh)
+// Auto-login on refresh
 // ------------------------
 window.onload = () => {
   const token = localStorage.getItem("token");
@@ -142,9 +101,9 @@ window.onload = () => {
   if (token && username) {
     document.getElementById("registerSection").style.display = "none";
     document.getElementById("loginSection").style.display = "none";
-    document.getElementById("navbar").style.display = "block";
+    document.getElementById("dashboard").style.display = "block";
 
-    showWelcome(username);
-    showSection("home");
+    document.getElementById("welcomeMessage").innerText = `Welcome ${username} 🚀`;
+    loadResources();
   }
 };

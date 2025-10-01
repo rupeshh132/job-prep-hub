@@ -10,14 +10,6 @@
 <body>
   <h1>🚀 Job Prep Hub</h1>
 
-  <!-- Navbar -->
-  <nav id="navbar" style="display:none; margin-bottom:20px;">
-    <button onclick="showSection('home')">Home</button>
-    <button onclick="showSection('resources')">Resources</button>
-    <button onclick="showSection('profile')">Profile</button>
-    <button onclick="logout()">Logout</button>
-  </nav>
-
   <!-- Register Form -->
   <div id="registerSection">
     <h2>Register</h2>
@@ -26,7 +18,7 @@
       <input type="password" id="registerPassword" placeholder="Password" required>
       <button type="submit">Register</button>
     </form>
-    <p>Already have an account? <a href="#" onclick="showLogin()">Login here</a></p>
+    <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
   </div>
 
   <!-- Login Form -->
@@ -37,25 +29,15 @@
       <input type="password" id="loginPassword" placeholder="Password" required>
       <button type="submit">Login</button>
     </form>
-    <p>New user? <a href="#" onclick="showRegister()">Register here</a></p>
+    <p>Don’t have an account? <a href="#" onclick="showRegister()">Register</a></p>
   </div>
 
-  <!-- Welcome / Home -->
-  <div id="homeSection" style="display:none; margin-top:20px;">
-    <div id="welcomeMessage" style="font-weight:bold; color:green;"></div>
-  </div>
-
-  <!-- Resources -->
-  <div id="resourcesSection" style="display:none; margin-top:20px;">
-    <h2>📚 Resources</h2>
+  <!-- Dashboard -->
+  <div id="dashboard" style="display:none;">
+    <h2>📚 Dashboard</h2>
+    <div id="welcomeMessage"></div>
     <ul id="resourcesList"></ul>
+    <button onclick="logout()">Logout</button>
   </div>
-
-  <!-- Profile -->
-  <div id="profileSection" style="display:none; margin-top:20px;">
-    <h2>👤 Profile</h2>
-    <p id="profileInfo"></p>
-  </div>
-
 </body>
 </html>
